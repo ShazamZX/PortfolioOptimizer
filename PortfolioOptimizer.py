@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 from scipy.optimize import minimize
+import json
 
 
-class markowitz:
+class MarkowitzPortfolioOptimizer:
   
     def __init__(self, data):
         self.data = data
@@ -58,15 +59,21 @@ class markowitz:
         pass
 
     def get_max_sharpe_ratio(self):
-        return np.argmax(self.returns/self.volatility)
+        idx = np.argmax(self.returns/self.volatility)
+        SR_max = self.returns[idx]/self.volatility[idx]
+        return idx,SR_max
 
     def get_mvp(self):
         return np.argmin(self.volatility)
 
-    def master(self):
-        self.portfolio_optimizer_positive_weights()
+    def fit(self, short_selling = False):
+        if short_selling:
+            self.portfolio_optimizer_generalized()
+        else:
+            self.portfolio_optimizer_positive_weights()
         volatility= self.volatility
         weights= self.weights
         returns= list(map(self.get_return,weights))
-        master_dict= dict({"volatility": volatility, "weights": weights, "returns": returns})
-        return master_dict
+        idx, SR_max = self.get_max_sharpe_ratio()
+        output= dict({"volatility": volatility, "weights": weights, "returns": returns, "Opt_ptf_idx": idx, "SR_max":SR_max})
+        return json.dumps(output)
