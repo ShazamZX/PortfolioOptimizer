@@ -3,6 +3,11 @@ import numpy as np
 from scipy.optimize import minimize
 import json
 
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
 
 class MarkowitzPortfolioOptimizer:
   
@@ -29,7 +34,7 @@ class MarkowitzPortfolioOptimizer:
             self.volatility.append(optimalvol['fun'])
             self.weights.append(optimalvol.x)
 
-    def lagrange_solver(Sigma,Pbar,r_min):
+    def lagrange_solver(self,Sigma,Pbar,r_min):
         N = len(Sigma)
         o = np.ones(N)
         Sigma_inv = np.linalg.inv(Sigma)
@@ -75,5 +80,6 @@ class MarkowitzPortfolioOptimizer:
         weights= self.weights
         returns= list(map(self.get_return,weights))
         idx, SR_max = self.get_max_sharpe_ratio()
+        idx, SR_max = float(idx), float(SR_max)
         output= dict({"volatility": volatility, "weights": weights, "returns": returns, "Opt_ptf_idx": idx, "SR_max":SR_max})
-        return json.dumps(output)
+        return json.dumps(output, indent=2, cls= NumpyEncoder)
