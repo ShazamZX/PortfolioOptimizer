@@ -15,7 +15,7 @@ class StockDataLoader:
 
     def add_stock(self,stock):
       stock_data= web.DataReader(f"{stock}.NS", "yahoo",self.start_date, self.end_date).reset_index()
-      self.df= self.df.merge(stock_data[['Date','Close']], on= 'Date').rename(columns={'Close':stock})
+      self.df= self.df.merge(stock_data[['Date','Adj Close']], on= 'Date').rename(columns={'Adj Close':stock})
       return
     
     def get_stock_data(self):
@@ -23,4 +23,5 @@ class StockDataLoader:
       for stock in self.stock_list:
         self.add_stock(stock)
       self.df.set_index('Date', inplace=True)
+      # self.df = self.df.groupby(pd.Grouper(freq='M')).mean()
       return self.df

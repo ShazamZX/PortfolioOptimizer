@@ -13,12 +13,13 @@ class MarkowitzPortfolioOptimizer:
   
     def __init__(self, data):
         self.data = data
-        self.returns = np.linspace(0,1,1000)
+        self.returns = np.arange(0,1,0.01)
         self.volatility = []
-        self.stock_count = len(data.columns)
+        self.stock_count = len(self.data.columns)
         daily_returns = (self.data - self.data.shift(1))/self.data.shift(1)
         mean_daily_returns = daily_returns.mean()
-        self.expected_annual_return = ((mean_daily_returns+1)**252) - 1
+        self.expected_annual_return = ((mean_daily_returns+1)**365) - 1
+        # self.expected_annual_return = mean_daily_returns*365
         self.Sigma = daily_returns.cov()
         self.weights = weights = []
 
@@ -70,6 +71,13 @@ class MarkowitzPortfolioOptimizer:
 
     def get_mvp(self):
         return np.argmin(self.volatility)
+    
+    def get_portfolio(self, R, amt):
+        idx_n, = np.where(self.returns==R)
+        idx = idx_n[0]
+        SR = self.returns[idx]/self.volatility[idx]
+        Amount = self.weights[idx] * amt
+        return Amount,SR,idx
 
     def fit(self, short_selling = False):
         if short_selling:
@@ -78,8 +86,9 @@ class MarkowitzPortfolioOptimizer:
             self.portfolio_optimizer_positive_weights()
         volatility= self.volatility
         weights= self.weights
-        returns= list(map(self.get_return,weights))
+        # returns= list(map(self.get_return,weights))
+        returns = self.returns
         idx, SR_max = self.get_max_sharpe_ratio()
         idx, SR_max = float(idx), float(SR_max)
-        output= dict({"volatility": volatility, "weights": weights, "returns": returns, "Opt_ptf_idx": idx, "SR_max":SR_max})
+        output= dict({"volatility": volatility, "weights": weights, "returns": returns, "Opt_ptf_idx": int(idx), "SR_max":SR_max})
         return json.dumps(output, indent=2, cls= NumpyEncoder)
