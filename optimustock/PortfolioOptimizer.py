@@ -76,7 +76,7 @@ class MarkowitzPortfolioOptimizer:
         idx_n, = np.where(self.returns==R)
         idx = idx_n[0]
         SR = self.returns[idx]/self.volatility[idx]
-        Amount = self.weights[idx] * amt
+        Amount = np.round((self.weights[idx] * amt),2)
         return Amount,SR,idx
 
     def fit(self, short_selling = False):
@@ -85,10 +85,9 @@ class MarkowitzPortfolioOptimizer:
         else:
             self.portfolio_optimizer_positive_weights()
         volatility= self.volatility
-        weights= self.weights
-        # returns= list(map(self.get_return,weights))
+        weights= np.round(self.weights, 4)
         returns = self.returns
         idx, SR_max = self.get_max_sharpe_ratio()
-        idx, SR_max = float(idx), float(SR_max)
-        output= dict({"volatility": volatility, "weights": weights, "returns": returns, "Opt_ptf_idx": int(idx), "SR_max":SR_max})
+        idx, SR_max = int(idx), float(SR_max)
+        output= dict({"volatility": volatility, "weights": weights, "returns": returns, "Opt_ptf_idx": idx, "SR_max":SR_max})
         return json.dumps(output, indent=2, cls= NumpyEncoder)
