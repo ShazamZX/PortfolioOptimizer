@@ -1,0 +1,10 @@
+README.md
+setup.py
+optimustock/PortfolioOptimizer.py
+optimustock/StockDataLoader.py
+optimustock/__init__.py
+optimustock.egg-info/PKG-INFO
+optimustock.egg-info/SOURCES.txt
+optimustock.egg-info/dependency_links.txt
+optimustock.egg-info/requires.txt
+optimustock.egg-info/top_level.txt
