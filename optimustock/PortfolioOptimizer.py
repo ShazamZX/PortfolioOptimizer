@@ -16,7 +16,9 @@ class MarkowitzPortfolioOptimizer:
         self.returns = np.arange(0,1,0.01)
         self.volatility = []
         self.stock_count = len(self.data.columns)
-        daily_returns = (self.data - self.data.shift(1))/self.data.shift(1)
+        # self.data = np.log(self.data)
+        daily_returns = (self.data/self.data.shift(1))-1
+        # daily_returns = np.log(self.data/self.data.shift(1))
         mean_daily_returns = daily_returns.mean()
         # self.expected_annual_return = ((mean_daily_returns+1)**365) - 1
         self.expected_annual_return = mean_daily_returns*365

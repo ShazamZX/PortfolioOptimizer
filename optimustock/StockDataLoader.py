@@ -6,7 +6,7 @@ import datetime
 class StockDataLoader:
     def __init__(self, stock_list):
       self.stock_list= stock_list
-      self.start_date= datetime.date.today() - datetime.timedelta(days=365*5)
+      self.start_date= datetime.date.today() - datetime.timedelta(days=365)
       self.end_date= datetime.date.today() 
       self.df= pd.DataFrame(columns=['Date'])
 
