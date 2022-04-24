@@ -14,16 +14,17 @@ class NumpyEncoder(json.JSONEncoder):
 class MarkowitzPortfolioOptimizer:
 
     def __init__(self, data):
+        data = data/data.iloc[0]
         self.data = data
-        self.returns = np.arange(0, 1, 0.01)
+        self.returns = np.arange(0, 0.6, 0.01)
         self.volatility = []
         self.stock_count = len(self.data.columns)
         # self.data = np.log(self.data)
-        daily_returns = (self.data/self.data.shift(1))-1
-        # daily_returns = np.log(self.data/self.data.shift(1))
+        # daily_returns = (self.data/self.data.shift(1))-1
+        daily_returns = np.log(self.data/self.data.shift(1))
         mean_daily_returns = daily_returns.mean()
         # self.expected_annual_return = ((mean_daily_returns+1)**365) - 1
-        self.expected_annual_return = mean_daily_returns*250
+        self.expected_annual_return = mean_daily_returns
         self.Sigma = daily_returns.cov()
         self.weights = weights = []
 
@@ -57,12 +58,12 @@ class MarkowitzPortfolioOptimizer:
 
     def get_return(self, w):
         w = np.array(w)
-        R = np.sum(w * self.expected_annual_return)
+        R = np.sum(w * self.expected_annual_return)*250
         return R
 
     def get_volatility(self, w):
         w = np.array(w)
-        V = np.sqrt(np.dot(w.T, np.dot(self.Sigma, w)))
+        V = np.sqrt(np.dot(w.T, np.dot(self.Sigma * 250, w)))
         return V
 
     def get_sharpe_ratio(self):

@@ -45,7 +45,7 @@ option = st.select_slider(
     'Select your preferred portfolio return ',
 
 
-    options=[str(i)+"%" for i in range(100)])
+    options=[str(i)+"%" for i in range(60)])
 st.write('Chosen Return  Value is :', option)
 return_expected = float(option[:-1])/100
 capital = st.number_input('Choose your Investment Amount in Rs. ')
