@@ -92,9 +92,9 @@ if (len(dropdown) > 0) and return_expected > 0 and capital > 0 and load_flag:
     plt.scatter(user_portfolio["volatility"],
                 user_portfolio["return"], c='black')
     plt.scatter(mvp_portfolio["volatility"],
-                mvp_portfolio["return"], c='black')
+                mvp_portfolio["return"], c='red')
     plt.scatter(SrMax_portfolio["volatility"],
-                SrMax_portfolio["return"], c='black')
+                SrMax_portfolio["return"], c='green')
 
     plt.colorbar(label="SR")
 
